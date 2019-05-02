@@ -16,7 +16,6 @@
 
 void drive(void);
 void rotate45(void);
-void rotate90(void);
 void CWorCCW(void);
 void ForR(void);
 void getDirection(void);
@@ -47,9 +46,6 @@ void rotate45(void){
 		delay(10);
 	}
 	MOTOR.setSpeedDir(0, DIRF);
-}
-void rotate90(void){
- //it rotates 90 degrees 
 }
 void CWorCCW(void){
  //clockwise vs counter-clockwise 
