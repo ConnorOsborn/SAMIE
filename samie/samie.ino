@@ -10,13 +10,15 @@ Arduino Control Code - Created by Maddy Henderson
 #include <seeed_pwm.h>
 #include <Ultrasonic.h>
 
-#define PIN_LIGHT_SENSOR A0
 #define PIN_SONAR_SENSOR 11
 #define SPEED 20
+
+Ultrasonic ultrasonic(PIN_SONAR_SENSOR);
 
 void setup()
 {
   Serial.begin(9600);
+  MOTOR.begin();
 }
 
 void loop()
@@ -32,12 +34,12 @@ void loop()
       
       if (command == "Drive")
       {
-        drive(Serial.readStringUntil(',').toInt());
+        safeDrive(Serial.readStringUntil(',').toInt());
         returnString = command + " Done";
       }
       else if(command == "Rotate")
       {
-        //rotate command
+        rotate90(Serial.readStringUntil(',').toInt());
         returnString = command + " Done";
       }
       else if(command == "")
@@ -65,16 +67,53 @@ void loop()
   }
 }
 
-int drive(int x)
+float getDistance()
 {
-  //while less than x meters
-  //drive
-  MOTOR.setSpeedDir1(19,DIRF);
-  MOTOR.setSpeedDir2(20,DIRF);
-  return x;
-} 
+	//m = 1.0026
+	//b = 0.6087
+	// (measured - b) / m = true distance
 
-int rotate(int x){
- 
- return x; 
+	return (ultrasonic.MeasureInCentimeters() - 0.6087) / 1.0026;
+}
+
+void safeDrive(int time)
+{
+	MOTOR.setSpeedDir1((SPEED - 1), DIRF);
+	MOTOR.setSpeedDir2((SPEED), DIRF);
+
+	time /= 5;
+	while (time--)
+	{
+		if (getDistance() < 8.00)
+		{
+			MOTOR.setSpeedDir(0, DIRF);
+			break;
+		}
+		delay(5);
+	}
+	MOTOR.setSpeedDir(0, DIRF);
+}
+
+void rotate90(int times)
+{
+	Serial.println("rotate90");
+	while (times--)
+	{
+		for (int speed = 0; speed < 30; speed++)
+		{
+			MOTOR.setSpeedDir1(speed, DIRF);
+			MOTOR.setSpeedDir2(speed, DIRR);
+			delay(10);
+		}
+
+		delay(400);
+
+		for (int speed = 30; speed > 0; --speed)
+		{
+			MOTOR.setSpeedDir1(speed, DIRF);
+			MOTOR.setSpeedDir2(speed, DIRR);
+			delay(10);
+		}
+	}
+	MOTOR.setSpeedDir(0, DIRF);
 }
