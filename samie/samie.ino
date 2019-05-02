@@ -32,10 +32,13 @@ void loop()
     {
       command = Serial.readStringUntil(',');
       
-      if (command == "Drive")
+      if (command == "DriveForward")
       {
         safeDrive(Serial.readStringUntil(',').toInt());
         returnString = command + " Done";
+      }
+      else if(command == "DriveBackward"){
+	      
       }
       else if(command == "Rotate")
       {
