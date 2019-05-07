@@ -47,13 +47,26 @@ void rotate45(void){
 	}
 	MOTOR.setSpeedDir(0, DIRF);
 }
-void CWorCCW(void){
+bool CWorCCW(bool isClockwise){
  //clockwise vs counter-clockwise 
+	if(isClockwise == 1){
+		return 1;
+	}else{
+		return 0;	
+	}
 }
-void ForR(void){
- //Forward vs. Reverse 
+bool ForR(bool isForward){
+ //Forward vs. Reverse
+	if(isForward == 1){
+		return 1;
+	}else{
+		return 0;	
+	}
 }
-void getDirection(void){
-  ForR();
-  CWorCCW();
+void getDirection(bool isForward,bool isClockwise,double angle, double distance){
+	double amountTurns;
+  ForR(isForward);
+  CWorCCW(isClockwise);
+	amountTurns = angle/45.0;
+	
 }
