@@ -38,23 +38,16 @@ void loop()
         returnString = command + " Done";
       }
       else if(command == "DriveBackward"){
-	      
+	safeDrive(((Serial.readStringUntil(',').toInt())*-1));   
       }
-      else if(command == "Rotate")
+      else if(command == "RotateRight")
       {
-        rotate90(Serial.readStringUntil(',').toInt());
+        rotate45(Serial.readStringUntil(',').toInt());
         returnString = command + " Done";
       }
-      else if(command == "")
+      else if(command == "RotateLeft")
       {
-        returnString = command + " Done";
-      }
-      else if(command == "")
-      {
-        returnString = command + " Done";
-      }
-      else if(command == "")
-      {
+	rotate45(((Serial.readStringUntil(',').toInt())*-1));
         returnString = command + " Done";
       }
       else
@@ -97,26 +90,22 @@ void safeDrive(int time)
 	MOTOR.setSpeedDir(0, DIRF);
 }
 
-void rotate90(int times)
+void rotate45(int times)
 {
-	Serial.println("rotate90");
-	while (times--)
+	for (int speed = 0; speed < 30; speed++)
 	{
-		for (int speed = 0; speed < 30; speed++)
-		{
-			MOTOR.setSpeedDir1(speed, DIRF);
-			MOTOR.setSpeedDir2(speed, DIRR);
-			delay(10);
-		}
+		MOTOR.setSpeedDir1(speed, DIRF);
+		MOTOR.setSpeedDir2(speed, DIRR);
+		delay(10);
+	}
 
-		delay(400);
+	delay(160);
 
-		for (int speed = 30; speed > 0; --speed)
-		{
-			MOTOR.setSpeedDir1(speed, DIRF);
-			MOTOR.setSpeedDir2(speed, DIRR);
-			delay(10);
-		}
+	for (int speed = 30; speed > 0; --speed)
+	{
+		MOTOR.setSpeedDir1(speed, DIRF);
+		MOTOR.setSpeedDir2(speed, DIRR);
+		delay(10);
 	}
 	MOTOR.setSpeedDir(0, DIRF);
 }
